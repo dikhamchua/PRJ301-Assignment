@@ -4,6 +4,6 @@ import java.util.List;
 
 import com.se1610.model.Category;
 
-public interface ICategoryDAO {
+public interface ICategoryDAO extends GenericDAO<Category>{
 	List<Category> getAll();
 }
