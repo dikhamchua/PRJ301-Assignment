@@ -15,6 +15,12 @@ import java.util.logging.Logger;
 
 public class NewsDAO extends AbstractDAO<News> implements INewsDAO {
 
+    /**
+     * this function use to find a list of news by categoryID
+     *
+     * @param categoryID
+     * @return a list of news
+     */
     @Override
     public List<News> findByCategoryID(int categoryID) {
         String sql = "select * from news\n"
@@ -22,55 +28,28 @@ public class NewsDAO extends AbstractDAO<News> implements INewsDAO {
         return query(sql, new NewMapper(), categoryID);
     }
 
+    /**
+     * this function use to
+     *
+     * @return
+     */
     @Override
     public List<Category> findAll() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     * insert a news into database
+     *
+     * @param news
+     * @return
+     */
     @Override
     public int save(News news) {
-        ResultSet resultSet = null;
-        Connection connection = null;
-        PreparedStatement statement = null;
-        int id = 0;
-        try {
-            String sql = "insert into [news](title, content,category_id)\n"
-                    + "values(? ,? ,?)";
-            connection = getConnection();
-            
-            connection.setAutoCommit(false);
-            statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            
-            
-            statement.setString(1, news.getTitle());
-            statement.setString(2, news.getContent());
-            statement.setInt(3, news.getCategoryID());
-            
-             
-            statement.executeUpdate();
 
-            resultSet = statement.getGeneratedKeys();
-            if (resultSet.next()) {
-                id = resultSet.getInt(1);
-            }
-            connection.commit();
-            return id;
-        } catch (SQLException ex) {
-            try {
-                connection.rollback();
-            } catch (SQLException ex1) {
-                ex1.printStackTrace();
-            }
-        } finally {
-            try {
-                connection.close();
-                statement.close();
-                resultSet.close();
-            } catch (SQLException e) {
-                // TODO Auto-generated catch block
-            }
-        }
-        return 0;
+        String sql = "insert into [news](title, content,category_id)\n"
+                + "values(? ,? ,?)";
+        return insert(sql, news.getTitle(), news.getContent(), news.getCategoryID());
     }
 
 }
