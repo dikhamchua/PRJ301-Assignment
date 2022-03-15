@@ -14,6 +14,7 @@ import com.se1610.model.User;
 import com.se1610.service.ICategoryService;
 import com.se1610.service.INewService;
 import com.se1610.dao.INewsDAO;
+import com.se1610.model.News;
 
 @WebServlet(urlPatterns = {"/trang-chu", "/dang-nhap"})
 public class HomeController extends HttpServlet {
@@ -27,10 +28,18 @@ public class HomeController extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int categoryID = 1;
-        request.setAttribute("news", newsService.findByCategoryID(categoryID));
+        String title = "Bài viết 4";
+        String content = "Bài viết 4";
+        int categoryID = 2;
+        News news = new News();
+        news.setTitle(title);
+        news.setContent(content);
+        news.setCategoryID(categoryID);
+        
+        newsService.save(news);
+        
+        
         request.setAttribute("categories", categoryService.getAll());
-
         request.getRequestDispatcher("view/web/home.jsp").forward(request, response);
     }
 

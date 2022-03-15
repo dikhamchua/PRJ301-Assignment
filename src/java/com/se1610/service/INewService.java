@@ -5,5 +5,6 @@ import java.util.List;
 
 public interface INewService {
     List<News> findByCategoryID(int categoryID);
-
+    
+    News save(News news);
 }

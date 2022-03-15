@@ -15,4 +15,11 @@ public class NewsService implements INewService{
         return newsDao.findByCategoryID(categoryID);
     }
 
+    @Override
+    public News save(News news) {
+        int id = newsDao.save(news);
+        System.out.println(id);
+        return null;
+    }
+
 }
