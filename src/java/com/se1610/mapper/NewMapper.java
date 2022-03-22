@@ -23,6 +23,8 @@ public class NewMapper implements RowMapper<News> {
             News news = new News();
             news.setId(resultSet.getInt("id"));
             news.setTitle(resultSet.getString("title"));
+            news.setContent(resultSet.getString("content"));
+            news.setCategoryID(resultSet.getInt("category_id"));
             return news;
         } catch (SQLException ex) {
             return null;

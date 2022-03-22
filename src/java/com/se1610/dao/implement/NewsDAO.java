@@ -5,13 +5,6 @@ import com.se1610.model.News;
 import java.util.List;
 import com.se1610.dao.INewsDAO;
 import com.se1610.mapper.NewMapper;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class NewsDAO extends AbstractDAO<News> implements INewsDAO {
 
@@ -50,6 +43,14 @@ public class NewsDAO extends AbstractDAO<News> implements INewsDAO {
         String sql = "insert into [news](title, content,category_id)\n"
                 + "values(? ,? ,?)";
         return insert(sql, news.getTitle(), news.getContent(), news.getCategoryID());
+    }
+
+    @Override
+    public News findOne(int id) {
+        String sql = "select * from news\n"
+                + "where id = ?";
+        List<News> news = query(sql, new NewMapper(), id);
+        return news.isEmpty() ? null : news.get(0);
     }
 
 }

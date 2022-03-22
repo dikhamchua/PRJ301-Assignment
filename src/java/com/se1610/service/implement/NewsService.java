@@ -17,9 +17,8 @@ public class NewsService implements INewService{
 
     @Override
     public News save(News news) {
-        int id = newsDao.save(news);
-        System.out.println(id);
-        return null;
+        int newsID = newsDao.save(news);
+        return newsDao.findOne(newsID);
     }
 
 }
