@@ -25,6 +25,7 @@ public class NewMapper implements RowMapper<News> {
             news.setTitle(resultSet.getString("title"));
             news.setContent(resultSet.getString("content"));
             news.setCategoryID(resultSet.getInt("category_id"));
+            news.setCreateDate(resultSet.getDate("create_date"));
             return news;
         } catch (SQLException ex) {
             return null;

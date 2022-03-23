@@ -16,5 +16,6 @@ public interface INewsDAO extends GenericDAO<News> {
 
     //save news to database
     int save(News news);
-
+    
+    void update(News news);
 }

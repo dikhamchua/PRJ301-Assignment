@@ -1,5 +1,6 @@
 package com.se1610.controller.web;
 
+import com.se1610.model.News;
 import java.io.IOException;
 
 import javax.inject.Inject;
@@ -24,7 +25,13 @@ public class HomeController extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-      
+        News updateNews = new News();
+        updateNews.setId(5);
+        updateNews.setTitle("bai viet test");
+        updateNews.setCategoryID(4);
+        News news = newsService.update(updateNews);
+        System.out.println(news.getTitle());
+        
         request.setAttribute("categories", categoryService.getAll());
         request.getRequestDispatcher("view/web/home.jsp").forward(request, response);
     }

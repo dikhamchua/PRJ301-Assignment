@@ -7,6 +7,7 @@ package com.se1610.dao.implement;
 
 import com.se1610.dao.GenericDAO;
 import com.se1610.mapper.RowMapper;
+import com.sun.org.apache.bcel.internal.generic.Type;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
@@ -14,6 +15,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,9 +26,10 @@ import java.util.List;
 public class AbstractDAO<T> implements GenericDAO<T> {
 
     protected Connection connection;
-    
+
     /**
      * it use to get a connection to database
+     *
      * @return an connection or null
      */
     public Connection getConnection() {
@@ -45,10 +48,11 @@ public class AbstractDAO<T> implements GenericDAO<T> {
         return null;
 
     }
-    
+
     /**
      * use to select from database
-     * @param <T> 
+     *
+     * @param <T>
      * @param sql
      * @param rowMapper
      * @param parameters
@@ -84,26 +88,29 @@ public class AbstractDAO<T> implements GenericDAO<T> {
             }
         }
     }
-    
+
     /**
      * Set parameter to statement
+     *
      * @param statement
-     * @param parameters 
+     * @param parameters
      */
     protected void setParameter(PreparedStatement statement, Object... parameters) {
         try {
-            for (int i = 1; i <= parameters.length; i++) {
-                Object parameter = parameters[i - 1];
+            for (int i = 0; i < parameters.length; i++) {
+                Object parameter = parameters[i];
+                int index = i + 1;
+
                 if (parameter instanceof Integer) {
-                    statement.setInt(i, (int) parameter);
+                    statement.setInt(index, (int) parameter);
                 } else if (parameter instanceof String) {
-                    statement.setString(i, (String) parameter);
-                }else if (parameter instanceof Long) {
-                    statement.setLong(i, (Long) parameter);
-                }else if (parameter instanceof Date ) {
-                    statement.setDate(i, (Date) parameter);
-                }else if (parameter instanceof Double) {
-                    statement.setDouble(i, (double) parameter);
+                    statement.setString(index, (String) parameter);
+                } else if (parameter instanceof Long) {
+                    statement.setLong(index, (Long) parameter);
+                } else if (parameter instanceof Date) {
+                    statement.setDate(index, (Date) parameter);
+                } else if (parameter instanceof Double) {
+                    statement.setDouble(index, (Double) parameter);
                 }
             }
         } catch (Exception e) {
@@ -111,50 +118,53 @@ public class AbstractDAO<T> implements GenericDAO<T> {
         }
 
     }
-    /**
-     * use to update or delete 
-     * @param sql - update or delete query
-     * @param parameters - the parameter can be string, integer, ... 
-     */
 
+    /**
+     * use to update or delete
+     *
+     * @param sql - update or delete query
+     * @param parameters - the parameter can be string, integer, ...
+     */
     @Override
     public void update(String sql, Object... parameters) {
         Connection connection = null;
         PreparedStatement statement = null;
-
         try {
             connection = getConnection();
             connection.setAutoCommit(false);
-
             statement = connection.prepareStatement(sql);
             setParameter(statement, parameters);
             statement.executeUpdate();
-
             connection.commit();
-
         } catch (SQLException e) {
-            try {
-                connection.rollback();
-            } catch (SQLException ex1) {
-                ex1.printStackTrace();
+            if (connection != null) {
+                try {
+                    connection.rollback();
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                }
             }
         } finally {
             try {
-                connection.close();
-                statement.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
+                if (connection != null) {
+                    connection.close();
+                }
+                if (statement != null) {
+                    statement.close();
+                }
+            } catch (SQLException e2) {
+                e2.printStackTrace();
             }
         }
-
     }
+
     /**
      * use to insert data into database
+     *
      * @param sql
      * @param parameters
      * @return 0 or id of that instance
      */
-
     @Override
     public int insert(String sql, Object... parameters) {
         Connection connection = null;
@@ -165,17 +175,17 @@ public class AbstractDAO<T> implements GenericDAO<T> {
             connection = getConnection();
             connection.setAutoCommit(false);
             statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            
+
             setParameter(statement, parameters);
             statement.executeUpdate();
             resultSet = statement.getGeneratedKeys();
             if (resultSet.next()) {
                 id = resultSet.getInt(1);
             }
-            
+
             connection.commit();
             return id;
-            
+
         } catch (SQLException e) {
             try {
                 connection.rollback();

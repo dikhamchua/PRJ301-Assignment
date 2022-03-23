@@ -21,4 +21,14 @@ public class NewsService implements INewService{
         return newsDao.findOne(newsID);
     }
 
+    @Override
+    public News update(News updateNews) {
+        News oldNews = newsDao.findOne(updateNews.getId());
+        updateNews.setCreateDate(oldNews.getCreateDate());
+        updateNews.setCreateBy(oldNews.getCreateBy());
+        
+        newsDao.update(updateNews);
+        return newsDao.findOne(updateNews.getId());
+    }
+
 }
