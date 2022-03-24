@@ -5,6 +5,7 @@
  */
 package com.se1610.dao;
 
+import com.se1610.dto.Parameter;
 import com.se1610.mapper.RowMapper;
 import java.util.List;
 
@@ -13,9 +14,11 @@ import java.util.List;
  * @author PHAM KHAC VINH
  */
 public interface GenericDAO<T> {
-    <T> List<T> query(String sql, RowMapper<T> rowMapper, Object... parameters );
+    <T> List<T> query(String sql, RowMapper<T> rowMapper, Parameter... parameters );
     
-    void update(String sql, Object... parameters);
+    void update(String sql, Parameter... parameters);
     
-    int insert(String sql, Object... parameters);
+    int insert(String sql, Parameter... parameters);
+    
+    
 }

@@ -6,6 +6,7 @@
 package com.se1610.dao.implement;
 
 import com.se1610.dao.GenericDAO;
+import com.se1610.dto.Parameter;
 import com.se1610.mapper.RowMapper;
 import com.sun.org.apache.bcel.internal.generic.Type;
 import java.sql.Connection;
@@ -59,7 +60,7 @@ public class AbstractDAO<T> implements GenericDAO<T> {
      * @return a list can select
      */
     @Override
-    public <T> List<T> query(String sql, RowMapper<T> rowMapper, Object... parameters) {
+    public <T> List<T> query(String sql, RowMapper<T> rowMapper, Parameter... parameters) {
         List<T> results = new ArrayList<>();
         Connection connection = getConnection();
         PreparedStatement statement = null;
@@ -95,22 +96,24 @@ public class AbstractDAO<T> implements GenericDAO<T> {
      * @param statement
      * @param parameters
      */
-    protected void setParameter(PreparedStatement statement, Object... parameters) {
+    protected void setParameter(PreparedStatement statement, Parameter... parameters) {
         try {
             for (int i = 0; i < parameters.length; i++) {
-                Object parameter = parameters[i];
+                Parameter parameter = parameters[i];
                 int index = i + 1;
 
-                if (parameter instanceof Integer) {
-                    statement.setInt(index, (int) parameter);
-                } else if (parameter instanceof String) {
-                    statement.setString(index, (String) parameter);
-                } else if (parameter instanceof Long) {
-                    statement.setLong(index, (Long) parameter);
-                } else if (parameter instanceof Date) {
-                    statement.setDate(index, (Date) parameter);
-                } else if (parameter instanceof Double) {
-                    statement.setDouble(index, (Double) parameter);
+                if (parameter.getValue() instanceof Integer) {
+                    statement.setInt(index, (int) parameter.getValue());
+                } else if (parameter.getValue() instanceof String) {
+                    statement.setString(index, (String) parameter.getValue());
+                } else if (parameter.getValue() instanceof Long) {
+                    statement.setLong(index, (Long) parameter.getValue());
+                } else if (parameter.getValue() instanceof Date) {
+                    statement.setDate(index, (Date) parameter.getValue());
+                } else if (parameter.getValue() instanceof Double) {
+                    statement.setDouble(index, (Double) parameter.getValue());
+                } else if (parameter.getValue() == null) {
+                    statement.setNull(index, parameter.getType());
                 }
             }
         } catch (Exception e) {
@@ -126,7 +129,7 @@ public class AbstractDAO<T> implements GenericDAO<T> {
      * @param parameters - the parameter can be string, integer, ...
      */
     @Override
-    public void update(String sql, Object... parameters) {
+    public void update(String sql, Parameter... parameters) {
         Connection connection = null;
         PreparedStatement statement = null;
         try {
@@ -137,6 +140,7 @@ public class AbstractDAO<T> implements GenericDAO<T> {
             statement.executeUpdate();
             connection.commit();
         } catch (SQLException e) {
+            e.printStackTrace();
             if (connection != null) {
                 try {
                     connection.rollback();
@@ -166,7 +170,7 @@ public class AbstractDAO<T> implements GenericDAO<T> {
      * @return 0 or id of that instance
      */
     @Override
-    public int insert(String sql, Object... parameters) {
+    public int insert(String sql, Parameter... parameters) {
         Connection connection = null;
         ResultSet resultSet = null;
         PreparedStatement statement = null;

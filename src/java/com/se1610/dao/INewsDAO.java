@@ -18,4 +18,6 @@ public interface INewsDAO extends GenericDAO<News> {
     int save(News news);
     
     void update(News news);
+    
+    void delete(int id);
 }

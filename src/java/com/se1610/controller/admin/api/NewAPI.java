@@ -51,8 +51,7 @@ public class NewAPI extends HttpServlet {
         objectMapper.writeValue(response.getOutputStream(), newsModel);
 
     }
-    
-    
+
     /**
      * update
      *
@@ -76,19 +75,15 @@ public class NewAPI extends HttpServlet {
         mapper.writeValue(response.getOutputStream(), updateNews);
 
     }
-    
 
-    /**
-     * delete
-     *
-     * @param req
-     * @param resp
-     * @throws ServletException
-     * @throws IOException
-     */
-    @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doDelete(req, resp); //To change body of generated methods, choose Tools | Templates.
-    }
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		ObjectMapper mapper = new ObjectMapper();
+		request.setCharacterEncoding("UTF-8");
+		response.setContentType("application/json");
+		News newModel =  Utility.Of(request.getReader()).toModel(News.class);
+		newService.delete(newModel.getIds());
+		mapper.writeValue(response.getOutputStream(), "{}");
+	}
 
 }

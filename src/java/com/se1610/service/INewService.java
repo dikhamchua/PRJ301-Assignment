@@ -10,5 +10,7 @@ public interface INewService {
     News save(News news);
 
     News update(News updateNews);
+    
+    void delete(int []ids);
 
 }
